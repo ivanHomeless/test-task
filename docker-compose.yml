@@ -1,0 +1,33 @@
+version: '3'
+services:
+    nginx:
+        build: docker/images/nginx
+        container_name: nginx
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - .:/usr/share/nginx/test
+            - ./logs/nginx:/var/log/nginx
+            - ./docker/hosts:/etc/nginx/conf.d
+        links:
+            - php
+    php:
+        build: docker/images/php
+        container_name: php
+        volumes:
+            - .:/usr/share/nginx/test
+    mysql:
+        build: docker/images/mysql
+        container_name: mysql
+        ports:
+            - "3306:3306"
+        volumes:
+            - /docker-data/mysql:/var/lib/mysql
+            - /docker-data/mysql-files:/var/lib/mysql-files
+            - /docker-data/etc/mysql:/etc/mysql
+            - ./logs/mysql:/var/log/mysql
+            - ./docker/data:/docker-entrypoint-initdb.d
+        environment:
+            MARIADB_ROOT_PASSWORD: Gpy8Y!xFnwOj6aMu
+            MARIADB_DATABASE: test-task
